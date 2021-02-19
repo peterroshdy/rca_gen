@@ -7,6 +7,9 @@ var multer = require('multer')
 const {v4: uuidv4} = require('uuid');
 var puppeteer = require('puppeteer')
 const fs = require('fs');
+var url2pdf = require("url2pdf");
+const { send } = require('process');
+
 
 /*
 var storage = multer.diskStorage({
@@ -31,6 +34,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, 'pdfs')));
 
 // MAIN PAGE
 app.get('/', (req, res) => {
@@ -75,7 +79,7 @@ app.get("/pdf/:id", async (req, res) => {
   fs.readFile(`localData/${pdf_id}.json`, (err, data) => {
     if(!err){
       let rca = JSON.parse(data);
-      res.render("pdf.ejs", {ser_num:rca['ser_num'], bpo: rca['bpo'], date:rca['date'], inc:rca['inc'], prepared:rca['prepared'], start_time:rca['start_time'], end_time:rca['end_time'], desc:rca['desc'], impacted:rca['imapacted'], num_of_workstations:rca['num_of_workstations'], root_cause:rca['root_cause'], resl:rca['resl'], preven:rca['preven']})
+      res.render("pdf.ejs", {ser_num:rca['ser_num'], bpo: rca['bpo'], date:rca['date'], inc:rca['inc'], prepared:rca['prepared'], start_time:rca['start_time'], end_time:rca['end_time'], desc:rca['desc'], impacted:rca['impacted'], num_of_workstations:rca['num_of_workstations'], root_cause:rca['root_cause'], resl:rca['resl'], preven:rca['preven']})
     }else{
       res.redirect("/")
     }
@@ -87,32 +91,13 @@ app.get("/pdf/:id", async (req, res) => {
 
 app.get("/downloadpdf", async (req, res) => {
   const url = req.query.target;
-
-  const browser = await puppeteer.launch({
-      headless: true
-  });
-
-  const webPage = await browser.newPage();
-
-  await webPage.goto(url, {
-      waitUntil: "networkidle0"
-  });
-  
-  const pdf = await webPage.pdf({
-      printBackground: true,
-      format: "Letter",
-      margin: {
-          top: "20px",
-          bottom: "40px",
-          left: "20px",
-          right: "20px"
-      }
-  });
-
-  await browser.close();
-
-  res.contentType("application/pdf");
-  res.send(pdf);
+    url2pdf.renderPdf(url, {
+    paperSize: {format: "A4", orientation: 'portrait'}, 
+    autoCleanFileAgeInSec: 24 * 3600,
+  }).then(function(path){
+      //res.contentType("application/pdf");
+      res.sendFile(path)
+    });
 })
 
 // catch 404 and forward to error handler
