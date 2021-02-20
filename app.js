@@ -9,6 +9,9 @@ var puppeteer = require('puppeteer')
 const fs = require('fs');
 var url2pdf = require("url2pdf");
 const { send } = require('process');
+var MongoClient = require('mongodb').MongoClient;
+
+
 
 
 /*
@@ -40,52 +43,88 @@ app.use(express.static(path.join(__dirname, 'pdfs')));
 app.get('/', (req, res) => {
   const localData = 'localData/';
   var files = []
-  fs.readdir(localData, (err, files) => {
-    files.forEach(file => {
-      files.push(file.path)
-      console.log(file.path)
+    // Connect to the db
+    MongoClient.connect("mongodb://localhost:27017/rca", function (err, db) {
+      var dbo = db.db("rca");
+      //Write databse Insert/Update/Query code here..
+      dbo.collection("data").find({}).toArray(function(err, result) {
+        res.render('index', {result: result});
+        db.close();
+      });
+                  
     });
-  });
-  res.render('index', {files: files});
 })
 
 // PREVIEW PAGE
 app.get('/gen', (req, res) => {
-  if(req.query){
+
     var ser_num = uuidv4();
     var {bpo, date, inc, prepared, start_time, end_time, desc, impacted, num_of_workstations, root_cause, resl, preven} = req.query
     var fullUrl = req.protocol + '://' + req.get('host');
     var data = {fullUrl:fullUrl, ser_num:ser_num, bpo: bpo, date:date, inc:inc, prepared:prepared, start_time:start_time, end_time:end_time, desc:desc, impacted:impacted, num_of_workstations:num_of_workstations, root_cause:root_cause, resl:resl, preven:preven}
-    // convert json to string
-    const formatJson = JSON.stringify(data);
-    // write JSON string to a file
-    fs.writeFile(`localData/${ser_num}.json`, formatJson, (err) => {
-      if (err) {
-          throw err;
-      }
-      console.log("JSON data is saved.");
-    });
-
-    res.render('gen.ejs', {fullUrl:fullUrl, ser_num:ser_num, bpo: bpo, date:date, inc:inc, prepared:prepared, start_time:start_time, end_time:end_time, desc:desc, impacted:impacted, num_of_workstations:num_of_workstations, root_cause:root_cause, resl:resl, preven:preven})
     
-  }else{
-    res.redirect("/")
-  }
+
+    // Connect to the db
+    MongoClient.connect("mongodb://localhost:27017/rca", function (err, db) {
+      
+      var dbo = db.db("rca");
+      //Write databse Insert/Update/Query code here..
+      dbo.collection("data").insertOne(data, function(err, res) {
+        console.log("1 document inserted");
+        db.close();
+      });
+                  
+    });
+  
+    res.render('gen.ejs', {fullUrl:fullUrl, ser_num:ser_num, bpo: bpo, date:date, inc:inc, prepared:prepared, start_time:start_time, end_time:end_time, desc:desc, impacted:impacted, num_of_workstations:num_of_workstations, root_cause:root_cause, resl:resl, preven:preven})
+
+
+ 
 });
 
 app.get("/pdf/:id", async (req, res) => {
   try {
     const pdf_id = req.params.id
-  fs.readFile(`localData/${pdf_id}.json`, (err, data) => {
-    if(!err){
-      let rca = JSON.parse(data);
-      res.render("pdf.ejs", {ser_num:rca['ser_num'], bpo: rca['bpo'], date:rca['date'], inc:rca['inc'], prepared:rca['prepared'], start_time:rca['start_time'], end_time:rca['end_time'], desc:rca['desc'], impacted:rca['impacted'], num_of_workstations:rca['num_of_workstations'], root_cause:rca['root_cause'], resl:rca['resl'], preven:rca['preven']})
-    }else{
-      res.redirect("/")
-    }
+
+    MongoClient.connect("mongodb://localhost:27017/rca", function (err, db) {
+     var dbo = db.db("rca");
+      //Write databse Insert/Update/Query code here..
+      dbo.collection("data").findOne({"ser_num": pdf_id}, function(err, rca) {
+
+        if(rca){
+        res.render("pdf.ejs", {ser_num:rca['ser_num'], bpo: rca['bpo'], date:rca['date'], inc:rca['inc'], prepared:rca['prepared'], start_time:rca['start_time'], end_time:rca['end_time'], desc:rca['desc'], impacted:rca['impacted'], num_of_workstations:rca['num_of_workstations'], root_cause:rca['root_cause'], resl:rca['resl'], preven:rca['preven']})
+        db.close();
+        }else{
+          res.redirect("/")
+          db.close()
+        }
+      });
+                  
     });
+
+
   } catch (error) {
-    console.log(error)
+    res.redirect("/")
+  }
+})
+
+app.get("/view/:id", async (req, res) => {
+  try {
+    const pdf_id = req.params.id
+
+    MongoClient.connect("mongodb://localhost:27017/rca", function (err, db) {
+      
+      var dbo = db.db("rca");
+      //Write databse Insert/Update/Query code here..
+      dbo.collection("data").findOne({"ser_num": pdf_id}, function(err, result) {
+        res.render('view', {result: result});
+        db.close();
+      });
+                  
+    });
+
+  } catch (error) {
+    res.redirect("/")
   }
 })
 

@@ -7,71 +7,90 @@
   </head>
   <body>
 
-    <%=files%>
+    
     <div class="container">
       <div class="row">
+        <h3>Old RCAs</h3>
+        
+        <ul>
+
+          <% if(result != '') { %>
+
+          <% result.forEach(function(rca) { %>
+            <a href="<%= rca.fullUrl %>/view/<%= rca.ser_num %>"><%= rca.date %> : <%= rca.ser_num %></a><br>
+          <% }); %> 
+
+          <% }else{ %> 
+            <p>You don't have any RCAs yet.</p>
+          <% } %> 
+
+         </ul>
+      </div>
+      <br><br>
+
+      <div class="row" style="margin-right: 10px;margin-left: 10px;">
         <div class="col-lg-12">
 
 
           <form action="/gen" method="GET">
             <div class="mb-3">
               <label for="date" class="form-label">What's the Date of the incident ?</label>
-              <input type="date" class="form-control" name="date">
+              <input required type="date" class="form-control" name="date">
             </div>
 
             <div class="mb-3">
               <label class="form-label">BPO Sites Affected ?</label>
-              <textarea name="bpo" class="form-control"></textarea>
+              <textarea required name="bpo" class="form-control"></textarea>
             </div>
 
             <div class="mb-3">
               <label for="inc" class="form-label">What is the incident number ?</label>
-              <textarea name="inc" class="form-control"></textarea>
+              <textarea required name="inc" class="form-control"></textarea>
             </div>
 
             <div class="mb-3">
               <label class="form-label">Prepared By ?</label>
-              <textarea name="prepared" class="form-control"></textarea>
+              <textarea required name="prepared" class="form-control"></textarea>
             </div>
 
             <div class="mb-3">
               <label class="form-label">What is the start date & time?</label>
-              <textarea name="start_time" class="form-control"></textarea>
+              <textarea required name="start_time" class="form-control"></textarea>
             </div>
 
             <div class="mb-3">
               <label class="form-label">What is the end date & time?</label>
-              <textarea name="end_time" class="form-control"></textarea>
+              <textarea required name="end_time" class="form-control"></textarea>
             </div>
 
             <div class="mb-3">
               <label class="form-label">What is the problem description ?</label>
-              <textarea name="desc" class="form-control"></textarea>
+              <textarea required name="desc" class="form-control"></textarea>
             </div>
 
             <div class="mb-3">
               <label class="form-label">Who is impacted ?</label>
-              <textarea name="impacted" class="form-control"></textarea>
+              <textarea required name="impacted" class="form-control"></textarea>
             </div>
 
             <div class="mb-3">
               <label class="form-label">Number of Workstation ?</label>
-              <textarea name="num_of_workstations" class="form-control"></textarea>
+              <textarea required name="num_of_workstations" class="form-control"></textarea>
             </div>
 
             <div class="mb-3">
               <label class="form-label">What is the root cause ?</label>
-              <textarea name="root_cause" class="form-control"></textarea>
+              <textarea required name="root_cause" class="form-control"></textarea>
             </div>
 
             <div class="mb-3">
               <label class="form-label">What is the resolution ?</label>
-              <textarea name="resl" class="form-control"></textarea>
+              <textarea required name="resl" class="form-control"></textarea>
             </div>
 
             <div class="mb-3">
               <label class="form-label">What is the prevention ?</label>
-              <textarea name="preven" class="form-control"></textarea>
+              <textarea required name="preven" class="form-control"></textarea>
             </div>
 
             <!-- <input type="file" name="avatar" /> -->

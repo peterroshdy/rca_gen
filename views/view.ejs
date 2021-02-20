@@ -10,15 +10,10 @@
   
 </head>
 
-<style>
-    html {
-        zoom: 0.55; /*workaround for phantomJS2 rendering pages too large*/
-    }
-</style>
 <body>
     <div class="text-center">
         <img src="/images/logo.png" alt="logo" srcset=""><br>
-        <small>ROOT CAUSE ANALYSIS ID : <%=ser_num%></small><br><br><br><br>
+        <small>ROOT CAUSE ANALYSIS ID : <%=result.ser_num%></small><br><br><br><br>
     </div>
     <div class="container">
         <div class="row">
@@ -27,55 +22,55 @@
                     <tbody>
                       <tr>
                         <th scope="row"><h5>Date:</h5></th>
-                        <td colspan="2"> <%=date%></td>
+                        <td colspan="2"> <%=result.date%></td>
                       </tr>
                       <tr>
                         <th scope="row"><h5>BPO Sites Affected:</h5></th>
-                        <td colspan="2" > <%=bpo%></td>
+                        <td colspan="2" > <%=result.bpo%></td>
                       </tr>
                       <tr>
                         <th scope="row"><h5>Incident Number:</h5></th>
-                        <td colspan="2"> <%=inc%></td>
+                        <td colspan="2"> <%=result.inc%></td>
             
                       </tr>
                       <tr>
                         <th scope="row"><h5>Prepared by:</h5></th>
-                        <td colspan="2"> <%=prepared%></td>
+                        <td colspan="2"> <%=result.prepared%></td>
                       </tr>
                       <tr>
                         <th scope="row"><h5>Start Date & Time:</h5></th>
-                        <td colspan="2"><%=start_time%></td>
+                        <td colspan="2"><%=result.start_time%></td>
                       </tr>
                       <tr>
                         <th scope="row"><h5>End Date & Time:</h5></th>
-                        <td colspan="2"><%=end_time%></td>
+                        <td colspan="2"><%=result.end_time%></td>
                       </tr>
            
                   
                       <tr>
                         <th scope="row"><h5>Problem Description:</h5></th>
-                        <td colspan="2"> <%=desc%></td>
+                        <td colspan="2"> <%=result.desc%></td>
                       </tr>
                       <tr>
                         <th scope="row"><h5>Impact:</h5></th>
-                        <td colspan="2"> <%=impacted%></td>
+                        <td colspan="2"> <%=result.impacted%></td>
                       </tr>
                       <tr>
                         <th scope="row"><h5>Number of workstation:</h5></th>
-                        <td colspan="2"> <%=num_of_workstations%></td>
+                        <td colspan="2"> <%=result.num_of_workstations%></td>
             
                       </tr>
                       <tr>
                         <th scope="row"><h5>Root cause:</h5></th>
-                        <td colspan="2"> <%=root_cause%></td>
+                        <td colspan="2"> <%=result.root_cause%></td>
                       </tr>
                       <tr>
                         <th scope="row"><h5>Resolution:</h5></th>
-                        <td colspan="2"><%=resl%></td>
+                        <td colspan="2"><%=result.resl%></td>
                       </tr>
                       <tr>
                         <th scope="row"><h5>Prevention:</h5></th>
-                        <td colspan="2"><%=preven%></td>
+                        <td colspan="2"><%=result.preven%></td>
                       </tr>
                       
                     </tbody>
@@ -83,6 +78,9 @@
             </div>
         </div>
     </div>
+  </div>
+  <div class="text-center">
+    <a href="/downloadpdf?target=<%=result.fullUrl%>/pdf/<%=result.ser_num%>">Download as PDF</a>
   </div>
 
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.6.0/dist/umd/popper.min.js" integrity="sha384-KsvD1yqQ1/1+IA7gi3P0tyJcT3vR+NdBTt13hSJ2lnve8agRGXTTyNaBYmCR/Nwi" crossorigin="anonymous"></script>
